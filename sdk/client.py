@@ -69,7 +69,11 @@ class Client(object):
 
         d = xmltodict.parse(r.content, xml_attribs=True)
 
-        info = d["UserService"]["UserLogin"]["User"]
+        try:
+            info = d["UserService"]["UserLogin"]["User"]
+        except:
+            pass
+        
         # print(
         #    "Your Pixel Starhips username is {} with {} as its registered email address.".format(
         #        info["@Name"], info["@Email"]
