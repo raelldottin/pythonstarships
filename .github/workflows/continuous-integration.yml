@@ -48,7 +48,7 @@ jobs:
           languages: python
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v1
+        uses: github/codeql-action/analyze@v2
 
   test-pip:
     needs: skip_duplicate
@@ -67,6 +67,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
+          pip install flake8
           pip install -r requirements.txt
           # install black, isort, and autopep8 for testing the pipe mode
           pip install black
