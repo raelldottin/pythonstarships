@@ -3,6 +3,7 @@ on:
   push:
     paths-ignore:
       - 'readme.md'
+      - 'readme.template'
       - '.github/**'
       - 'requirements.txt'
       - '.gitignore'
