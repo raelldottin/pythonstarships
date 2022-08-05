@@ -1,8 +1,7 @@
 name: Daily Automated Actions
 on:
   schedule:
-    cron: '1 20 * * *'
-    timezone: 'America/New_York'
+    - cron: '1 20 * * *'
 
 jobs:
   daily-run:
