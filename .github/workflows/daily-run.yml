@@ -1,6 +1,5 @@
 name: Daily Automated Actions
 on:
-  push:
   pull_request:
   schedule:
     - cron: '1 20 * * *'
@@ -26,4 +25,4 @@ jobs:
           pip install -r requirements.txt
       - name: Run code
         run: |
-          python main.py --auth ${{ secrets.auth_string }} --usernmae ${{ secrets.email_username }} --password ${{ secrets.email_password }} --recipient ${{ secrets.email_recipient }}
+          python main.py -a "${{ secrets.auth_string }}" -u "${{ secrets.email_username }}" -p "${{ secrets.email_password }}" -r "${{ secrets.email_recipient }}"
