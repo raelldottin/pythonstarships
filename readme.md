@@ -1,11 +1,11 @@
 <!---
 This file is auto-generate by a github hook please modify readme.template if you don't want to loose your work
 -->
-# raelldottin/pythonstarships v0.5.114
+# raelldottin/pythonstarships v0.5.115
 
 Automate trivial tasks in Pixel Starships Mobile Starategy Sci-Fi MMORPG
 
-[![ v0.5.114 ](https://github.com/raelldottin/pythonstarships/blob/main/pixelbot.png)](https://github.com/raelldottin/pythonstarships/blob/main/pixelbot.png)
+[![ v0.5.115 ](https://github.com/raelldottin/pythonstarships/blob/main/pixelbot.png)](https://github.com/raelldottin/pythonstarships/blob/main/pixelbot.png)
 
 # Requirements
 
@@ -32,4 +32,5 @@ It seems that battle is simulated server-side so we have to simulate it client-s
 But you could join first battle and leave. Server would insta-simulate data as soon as you reconnect.
 
 ---
+![Profile views](https://visitor-badge.glitch.me/badge?page_id=raelldottin)
 [![GitHub Metrics Updates](https://github.com/raelldottin/pythonstarships/actions/workflows/daily-run.yml/badge.svg)](https://github.com/raelldottin/pythonstarships/actions/workflows/dail-run.yml)
