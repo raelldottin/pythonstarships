@@ -543,6 +543,7 @@ class Client(object):
                             i["@RoomId"], i["@RoomDesignId"]
                         )
                         return True
+        print("There are no rooms or research to speed up.")
         return False
 
     def getLatestVersion(self):
