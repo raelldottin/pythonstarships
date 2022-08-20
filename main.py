@@ -135,9 +135,9 @@ def main():
     logfilepath = "/Users/rdottin/Documents/Personal/pythonstarships/collectallresources/collectrss.log"
     with LogFile(logfilepath):
         if type(args.auth) == list:
-            device = Device(language="ru", authentication_string=args.auth[0])
+            device = Device(language="en", authentication_string=args.auth[0])
         else:
-            device = Device(language="ru")
+            device = Device(language="en")
 
         client = None
 
@@ -156,11 +156,12 @@ def main():
             time.sleep(random.uniform(5.0, 10.0))
             client.heartbeat()
             time.sleep(random.uniform(0.1, 1.0))
-
             client.grabFlyingStarbux(random.randint(1, 2))
             time.sleep(random.uniform(5.0, 10.0))
 
             if client.freeStarbuxToday >= 10:
+                client.rushResearchOrConstruction()
+                time.sleep(random.uniform(0.1, 1.0))
                 if client.collectDailyReward():
                     print("You've collected the daily reward from the dropship.")
                 else:
