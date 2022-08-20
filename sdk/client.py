@@ -5,6 +5,7 @@ import time
 import datetime
 import random
 import sys
+from pprint import pprint
 
 from .security import (
     ChecksumCreateDevice,
@@ -413,6 +414,160 @@ class Client(object):
             self.freeStarbuxTodayTimestamp = time.time()
 
             return True
+        return False
+
+    def listImportantMessagesForUser(self):
+        if self.user.isAuthorized:
+            url = f"https://api.pixelstarships.com/MessageService/ListImportantMessagesForUser?accessToken={self.accessToken}&clientDateTime={'{0:%Y-%m-%dT%H:%M:%S}'.format(DotNet.validDateTime())}"
+            r = self.request(url, "GET")
+
+            d = xmltodict.parse(r.content, xml_attribs=True)
+
+            pprint(d)
+            return True
+        return False
+
+    def getShipByUserId(self, id=None):
+        if self.user.isAuthorized:
+            if id == None:
+                id = self.user.id
+            url = f"https://api.pixelstarships.com/ShipService/GetShipByUserId?userId={id}&accessToken={self.accessToken}&clientDateTime={'{0:%Y-%m-%dT%H:%M:%S}'.format(DotNet.validDateTime())}"
+            r = self.request(url, "GET")
+
+            d = xmltodict.parse(r.content, xml_attribs=True)
+
+            return d
+        return False
+
+    def listUserStarSystems(self):
+        if self.user.isAuthorized:
+            url = f"https://api.pixelstarships.com/GalaxyService/ListUserStarSystems?accessToken={self.accessToken}&clientDateTime={'{0:%Y-%m-%dT%H:%M:%S}'.format(DotNet.validDateTime())}"
+            r = self.request(url, "GET")
+            d = xmltodict.parse(r.content, xml_attribs=True)
+            pprint(d)
+            return True
+        return False
+
+    def listUserMarkers(self):
+        if self.user.isAuthorized:
+            url = f"https://api.pixelstarships.com/GalaxyService/ListUserMarkers?accessToken={self.accessToken}&clientDateTime={'{0:%Y-%m-%dT%H:%M:%S}'.format(DotNet.validDateTime())}"
+            r = self.request(url, "GET")
+            d = xmltodict.parse(r.content, xml_attribs=True)
+            pprint(d)
+            return True
+        return False
+
+    def listItemsOfAShip(self):
+        if self.user.isAuthorized:
+            url = f"https://api.pixelstarships.com/ItemService/ListItemsOfAShip?accessToken={self.accessToken}&clientDateTime={'{0:%Y-%m-%dT%H:%M:%S}'.format(DotNet.validDateTime())}"
+            r = self.request(url, "GET")
+            d = xmltodict.parse(r.content, xml_attribs=True)
+            pprint(d)
+            return True
+        return False
+
+    def listAllCharactersOfUser(self):
+        if self.user.isAuthorized:
+            url = f"https://api.pixelstarships.com/CharacterService/ListAllCharactersOfUser?accessToken={self.accessToken}&clientDateTime={'{0:%Y-%m-%dT%H:%M:%S}'.format(DotNet.validDateTime())}"
+            r = self.request(url, "GET")
+            d = xmltodict.parse(r.content, xml_attribs=True)
+            pprint(d)
+            return True
+        return False
+
+    def listRoomsViaAccessToken(self):
+        if self.user.isAuthorized:
+            url = f"https://api.pixelstarships.com/RoomService/ListRoomsViaAccessToken?accessToken={self.accessToken}&clientDateTime={'{0:%Y-%m-%dT%H:%M:%S}'.format(DotNet.validDateTime())}"
+            r = self.request(url, "GET")
+            d = xmltodict.parse(r.content, xml_attribs=True)
+            pprint(d)
+            return d
+        return False
+
+    def listAllResearches(self):
+        if self.user.isAuthorized:
+            url = f"https://api.pixelstarships.com/ResearchService/ListAllResearches?accessToken={self.accessToken}&clientDateTime={'{0:%Y-%m-%dT%H:%M:%S}'.format(DotNet.validDateTime())}"
+            r = self.request(url, "GET")
+            d = xmltodict.parse(r.content, xml_attribs=True)
+            pprint(d)
+            return d
+        return False
+
+    def speedUpResearchUsingBoostGauge(self, researchId, researchDesignId):
+        if self.user.isAuthorized:
+            url = f"https://api.pixelstarships.com/ResearchService/SpeedUpResearchUsingBoostGauge?researchId={researchId}&accessToken={self.accessToken}&clientDateTime={'{0:%Y-%m-%dT%H:%M:%S}'.format(DotNet.validDateTime())}"
+            d = self.listAllResearchDesigns()
+            for i in d["ResearchService"]["ListAllResearchDesigns"]["ResearchDesigns"][
+                "ResearchDesign"
+            ]:
+                if i["@ResearchDesignId"] == researchDesignId:
+                    print(
+                        f"Speeding up construction for {''.join(i['@ResearchName'])}."
+                    )
+                    self.request(url, "POST")
+                    break
+            return True
+        return False
+
+    def speedUpRoomConstructionUsingBoostGauge(self, roomId, roomDesignId):
+        if self.user.isAuthorized:
+            url = f"https://api.pixelstarships.com/RoomService/SpeedUpRoomConstructionUsingBoostGauge?roomId={roomId}&accessToken={self.accessToken}&clientDateTime={'{0:%Y-%m-%dT%H:%M:%S}'.format(DotNet.validDateTime())}"
+            d = self.listRoomDesigns()
+            for i in d["RoomService"]["ListRoomDesigns"]["RoomDesigns"]["RoomDesign"]:
+                if i["@RoomDesignId"] == roomDesignId:
+                    print(f"Speeding up contruction for {''.join(i['@RoomName'])}.")
+                    self.request(url, "POST")
+                    break
+            return True
+        return False
+
+    def rushResearchOrConstruction(self):
+        if self.user.isAuthorized:
+            d = self.getShipByUserId()
+            if d:
+                for i in d["ShipService"]["GetShipByUserId"]["Ship"]["Researches"][
+                    "Research"
+                ]:
+                    if i["@ResearchState"] == "Researching":
+                        self.speedUpResearchUsingBoostGauge(
+                            i["@ResearchId"], i["@ResearchDesignId"]
+                        )
+                        return True
+                for i in d["ShipService"]["GetShipByUserId"]["Ship"]["Rooms"]["Room"]:
+                    if i["@RoomStatus"] == "Upgrading":
+                        self.speedUpRoomConstructionUsingBoostGauge(
+                            i["@RoomId"], i["@RoomDesignId"]
+                        )
+                        return True
+        return False
+
+    def getLatestVersion(self):
+        if self.user.isAuthorized:
+            url = f"https://api.pixelstarships.com/SettingService/GetLatestVersion3?languageKey={self.device.languageKey}&deviceType=DeviceType{self.device.name}"
+
+            r = self.request(url, "GET")
+            d = xmltodict.parse(r.content, xml_attribs=True)
+            return d
+        return False
+
+    def listRoomDesigns(self):
+        if self.user.isAuthorized:
+            d = self.getLatestVersion()
+            if d:
+                url = f"https://api.pixelstarships.com/RoomService/ListRoomDesigns2?languageKey={self.device.languageKey}&designVersion={d['SettingService']['GetLatestSetting']['Setting']['@RoomDesignVersion']}"
+                r = self.request(url, "GET")
+                d = xmltodict.parse(r.content, xml_attribs=True)
+                return d
+        return False
+
+    def listAllResearchDesigns(self):
+        if self.user.isAuthorized:
+            d = self.getLatestVersion()
+            if d:
+                url = f"https://api.pixelstarships.com/ResearchService/ListAllResearchDesigns2?languageKey={self.device.languageKey}&designVersion={d['SettingService']['GetLatestSetting']['Setting']['@ResearchDesignVersion']}"
+                r = self.request(url, "GET")
+                d = xmltodict.parse(r.content, xml_attribs=True)
+                return d
         return False
 
     def heartbeat(self):
