@@ -542,6 +542,17 @@ class Client(object):
         print("There are no rooms or research to speed up.")
         return False
 
+    def upgradeResearchorRoom(self):
+        if self.user.isAuthorized:
+            d = self.getShipByUserId()
+            if d:
+                for i in d["ShipService"]["GetShipByUserId"]["Ship"]["Rooms"]["Room"]:
+                    roomId = i["@RoomId"]
+                    roomDesignId = i["@RoomDesignId"]
+                    url = f"https://api.pixelstarships.com/RoomService/UpgradeRoom2?roomId={roomId}&upgradeRoomDesignId={roomDesignId}&accessToken={self.accessToken}&clientDateTime={'{0:%Y-%m-%dT%H:%M:%S}'.format(DotNet.validDateTime())}"
+                    self.request(url, "POST")
+        return True
+
     def getLatestVersion(self):
         if self.user.isAuthorized:
             url = f"https://api.pixelstarships.com/SettingService/GetLatestVersion3?languageKey={self.device.languageKey}&deviceType=DeviceType{self.device.name}"
