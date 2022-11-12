@@ -1,11 +1,11 @@
 <!---
 This file is auto-generate by a github hook please modify readme.template if you don't want to loose your work
 -->
-# raelldottin/pythonstarships v0.5.118
+# raelldottin/pythonstarships v0.5.120
 
 Automate trivial tasks in Pixel Starships Mobile Starategy Sci-Fi MMORPG
 
-[![ v0.5.118 ](https://github.com/raelldottin/pythonstarships/blob/main/pixelbot.png)](https://github.com/raelldottin/pythonstarships/blob/main/pixelbot.png)
+[![ v0.5.120 ](https://github.com/raelldottin/pythonstarships/blob/main/pixelbot.png)](https://github.com/raelldottin/pythonstarships/blob/main/pixelbot.png)
 
 # Requirements
 
