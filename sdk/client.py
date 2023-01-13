@@ -6,7 +6,6 @@ import datetime
 import random
 import sys
 from pprint import pprint
-
 from .security import (
     ChecksumCreateDevice,
     ChecksumTimeForDate,
@@ -70,11 +69,7 @@ class Client(object):
 
         d = xmltodict.parse(r.content, xml_attribs=True)
 
-        try:
-            info = d["UserService"]["UserLogin"]["User"]
-        except:
-            pass
-        
+        info = d["UserService"]["UserLogin"]["User"]
         # print(
         #    "Your Pixel Starhips username is {} with {} as its registered email address.".format(
         #        info["@Name"], info["@Email"]
@@ -549,13 +544,36 @@ class Client(object):
     def upgradeResearchorRoom(self):
         if self.user.isAuthorized:
             d = self.getShipByUserId()
+            rooms = self.listRoomDesigns()
+            roomList = []
             if d:
                 for i in d["ShipService"]["GetShipByUserId"]["Ship"]["Rooms"]["Room"]:
                     roomId = i["@RoomId"]
                     roomDesignId = i["@RoomDesignId"]
-                    url = f"https://api.pixelstarships.com/RoomService/UpgradeRoom2?roomId={roomId}&upgradeRoomDesignId={roomDesignId}&accessToken={self.accessToken}&clientDateTime={'{0:%Y-%m-%dT%H:%M:%S}'.format(DotNet.validDateTime())}"
-                    self.request(url, "POST")
-        return True
+                    upgradeRoomDesignId = i["@UpgradeRoomDesignId"]
+                    roomStatus = i["@RoomStatus"]
+                    roomName = ""
+                    upgradeRoomName = ""
+
+                    if upgradeRoomDesignId != '0' and roomStatus != "Upgrading":
+                        url = f"https://api.pixelstarships.com/RoomService/UpgradeRoom2?roomId={roomId}&upgradeRoomDesignId={upgradeRoomDesignId}&accessToken={self.accessToken}"
+                        self.request(url, "POST")
+                        time.sleep(random.uniform(5.0, 10.0))
+
+
+                    for roomData in rooms['RoomService']['ListRoomDesigns']['RoomDesigns']['RoomDesign']:
+                        if roomDesignId == roomData['@RoomDesignId']:
+                            roomName = ''.join(roomData['@RoomName'])
+                            for roomData in rooms['RoomService']['ListRoomDesigns']['RoomDesigns']['RoomDesign']:
+                                if upgradeRoomDesignId == roomData['@RoomDesignId']:
+                                   upgradeRoomName = ''.join(roomData['@RoomName'])
+
+                            if roomName and upgradeRoomName and (roomStatus != "Upgrading"):
+                                print(f"Attempting to upgrade {roomName} to {upgradeRoomName}.")
+                                roomName = ""
+                                upgradeRoomName = ""
+            return True
+
 
     def getLatestVersion(self):
         if self.user.isAuthorized:
@@ -565,6 +583,7 @@ class Client(object):
             d = xmltodict.parse(r.content, xml_attribs=True)
             return d
         return False
+
 
     def listRoomDesigns(self):
         if self.user.isAuthorized:
