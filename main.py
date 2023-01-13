@@ -38,7 +38,7 @@ def email_logfile(filename, client, email=None, password=None, recipient=None):
     else:
         config = ConfigParser()
         config.read(
-            "/Users/rdottin/Documents/Personal/pythonstarships/collectallresources/.config"
+            "./.config"
         )
 
         try:
@@ -132,7 +132,7 @@ def main():
         help="recipient for the email log",
     )
     args = parser.parse_args()
-    logfilepath = "/Users/rdottin/Documents/Personal/pythonstarships/collectallresources/collectrss.log"
+    logfilepath = "./collectrss.log"
     with LogFile(logfilepath):
         if type(args.auth) == list:
             device = Device(language="en", authentication_string=args.auth[0])
