@@ -8,7 +8,7 @@ class Device(object):
     key = None
     refreshToken = None
     languageKey = "en"
-    DB = "/Users/rdottin/Documents/Personal/pythonstarships/collectallresources/.device"
+    DB = "./.device"
     authentication_string = None
 
     def __init__(
