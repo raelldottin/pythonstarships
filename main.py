@@ -158,11 +158,13 @@ def main():
 
             if client.freeStarbuxToday >= 10:
                 client.listAllCharactersOfUser()
+                time.sleep(random.uniform(5.0, 10.0))
                 client.rebuildAmmo()
+                time.sleep(random.uniform(5.0, 10.0))
                 client.upgradeResearchorRoom()
-                time.sleep(random.uniform(0.1, 1.0))
+                time.sleep(random.uniform(5.0, 10.0))
                 client.rushResearchOrConstruction()
-                time.sleep(random.uniform(0.1, 1.0))
+                time.sleep(random.uniform(5.0, 10.0))
                 if client.collectDailyReward():
                     print("You've collected the daily reward from the dropship.")
                 else:
