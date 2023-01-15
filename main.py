@@ -157,6 +157,7 @@ def main():
             time.sleep(random.uniform(5.0, 10.0))
 
             if client.freeStarbuxToday >= 10:
+                client.rebuildAmmo()
                 client.upgradeResearchorRoom()
                 time.sleep(random.uniform(0.1, 1.0))
                 client.rushResearchOrConstruction()
@@ -195,7 +196,6 @@ def main():
                     f"A total of {client.freeStarbuxToday} free starbux was collected today."
                 )
                 print(f"You have a total of {client.credits} starbux.")
-                client.rebuildAmmo()
                 break
     if (
         type(args.email) == list
