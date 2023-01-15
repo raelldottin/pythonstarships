@@ -21,6 +21,7 @@ class User(object):
     name = None
     isAuthorized = False
     lastHeartBeat = 0
+    clientDateTime = 0
 
     def __init__(self, id, name, lastHeartBeat, isAuthorized):
         self.id = id
@@ -179,7 +180,7 @@ class Client(object):
         self.checksum = ChecksumEmailAuthorize(
             self.device.key, email, ts, self.accessToken, self.salt
         )
-        print("f{checksum=}")
+
         #        self.checksum = checksum
 
         # if refreshToken was used we get acquire session without credentials
@@ -628,6 +629,18 @@ class Client(object):
             if d:
                 url = f"https://api.pixelstarships.com/ResearchService/ListAllResearchDesigns2?languageKey={self.device.languageKey}&designVersion={d['SettingService']['GetLatestSetting']['Setting']['@ResearchDesignVersion']}"
                 r = self.request(url, "GET")
+                d = xmltodict.parse(r.content, xml_attribs=True)
+                return d
+        return False
+
+    def rebuildAmmo(self):
+        if self.user.isAuthorized:
+            d = self.getLatestVersion()
+            if d:
+                print("Restocking ammo, androids, crafts, modules, and charges.")
+                self.clientDateTime = "{0:%Y-%m-%dT%H:%M:%S}".format(DotNet.validDateTime())
+                url = f"http://api.pixelstarships.com/RoomService/RebuildAmmo2?ammoCategory=None&clientDateTime={self.clientDateTime}&checksum={self.checksum}&accessToken={self.accessToken}"
+                r = self.request(url, "POST")
                 d = xmltodict.parse(r.content, xml_attribs=True)
                 return d
         return False
