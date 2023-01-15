@@ -5,9 +5,6 @@ import time
 import random
 from configparser import ConfigParser
 import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from email.mime.base import MIMEBase
 from email.message import Message
 import argparse
 
@@ -38,7 +35,7 @@ def email_logfile(filename, client, email=None, password=None, recipient=None):
     else:
         config = ConfigParser()
         config.read(
-            "./.config"
+            "./config.secrets"
         )
 
         try:
@@ -198,6 +195,7 @@ def main():
                     f"A total of {client.freeStarbuxToday} free starbux was collected today."
                 )
                 print(f"You have a total of {client.credits} starbux.")
+                client.rebuildAmmo()
                 break
     if (
         type(args.email) == list
