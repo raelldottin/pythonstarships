@@ -466,15 +466,6 @@ class Client(object):
             return True
         return False
 
-    def listAllCharactersOfUser(self):
-        if self.user.isAuthorized:
-            url = f"https://api.pixelstarships.com/CharacterService/ListAllCharactersOfUser?accessToken={self.accessToken}&clientDateTime={'{0:%Y-%m-%dT%H:%M:%S}'.format(DotNet.validDateTime())}"
-            r = self.request(url, "GET")
-            d = xmltodict.parse(r.content, xml_attribs=True)
-            pprint(d)
-            return True
-        return False
-
     def listRoomsViaAccessToken(self):
         if self.user.isAuthorized:
             url = f"https://api.pixelstarships.com/RoomService/ListRoomsViaAccessToken?accessToken={self.accessToken}&clientDateTime={'{0:%Y-%m-%dT%H:%M:%S}'.format(DotNet.validDateTime())}"
@@ -602,7 +593,6 @@ class Client(object):
                                 #                count += 1
             return True
 
-
     def getLatestVersion(self):
         if self.user.isAuthorized:
             url = f"https://api.pixelstarships.com/SettingService/GetLatestVersion3?languageKey={self.device.languageKey}&deviceType=DeviceType{self.device.name}"
@@ -611,7 +601,6 @@ class Client(object):
             d = xmltodict.parse(r.content, xml_attribs=True)
             return d
         return False
-
 
     def listRoomDesigns(self):
         if self.user.isAuthorized:
@@ -645,6 +634,21 @@ class Client(object):
                     r = self.request(url, "POST")
                     d = xmltodict.parse(r.content, xml_attribs=True)
                     return d
+        return False
+
+    def  listAllCharactersOfUser(self):
+        if self.user.isAuthorized:
+            d = self.getLatestVersion()
+            if d:
+                character_list = []
+                self.clientDateTime = "{0:%Y-%m-%dT%H:%M:%S}".format(DotNet.validDateTime())
+                url = f"http://api.pixelstarships.com/CharacterService/ListAllCharactersOfUser?accessToken={self.accessToken}&clientDateTime={self.clientDateTime}"
+                r = self.request(url, "GET")
+                d = xmltodict.parse(r.content, xml_attribs=True)
+                for character in d['CharacterService']['ListAllCharactersOfUser']['Characters']['Character']:
+                    character_list.append(character['@CharacterName'])
+                print(f"List of characters on your ship: {', '.join(character_list)}")
+                return True
         return False
 
     def heartbeat(self):
