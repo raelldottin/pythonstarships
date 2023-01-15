@@ -7,4 +7,4 @@ collectrss.out
 collectrss.sh
 UserService-AddStarbux.txt
 collectrss.log
-.config
+config.secrets
