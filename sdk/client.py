@@ -70,11 +70,11 @@ class Client(object):
         d = xmltodict.parse(r.content, xml_attribs=True)
 
         info = d["UserService"]["UserLogin"]["User"]
-        # print(
-        #    "Your Pixel Starhips username is {} with {} as its registered email address.".format(
-        #        info["@Name"], info["@Email"]
-        #    )
-        # )
+        print(
+           "Your Pixel Starhips username is {} with {} as its registered email address.".format(
+               info["@Name"], info["@Email"]
+           )
+        )
         userId = d["UserService"]["UserLogin"]["@UserId"]
         try:
             self.credits = int(d["UserService"]["UserLogin"]["User"]["@Credits"])
@@ -543,35 +543,62 @@ class Client(object):
 
     def upgradeResearchorRoom(self):
         if self.user.isAuthorized:
-            d = self.getShipByUserId()
-            rooms = self.listRoomDesigns()
-            roomList = []
-            if d:
-                for i in d["ShipService"]["GetShipByUserId"]["Ship"]["Rooms"]["Room"]:
-                    roomId = i["@RoomId"]
-                    roomDesignId = i["@RoomDesignId"]
-                    upgradeRoomDesignId = i["@UpgradeRoomDesignId"]
-                    roomStatus = i["@RoomStatus"]
+            shipData = self.getShipByUserId()
+            roomDesigns = self.listRoomDesigns()
+            if shipData:
+                for room in shipData["ShipService"]["GetShipByUserId"]["Ship"]["Rooms"]["Room"]:
+                    roomId = room["@RoomId"]
+                    roomStatus = room["@RoomStatus"]
+                    roomDesignId = room["@RoomDesignId"]
                     roomName = ""
+                    upgradeRoomDesignId = ""
                     upgradeRoomName = ""
 
-                    if upgradeRoomDesignId != '0' and roomStatus != "Upgrading":
-                        url = f"https://api.pixelstarships.com/RoomService/UpgradeRoom2?roomId={roomId}&upgradeRoomDesignId={upgradeRoomDesignId}&accessToken={self.accessToken}"
-                        self.request(url, "POST")
-                        time.sleep(random.uniform(5.0, 10.0))
+                    for roomDesignData in roomDesigns['RoomService']['ListRoomDesigns']['RoomDesigns']['RoomDesign']:
+                        if roomDesignId == roomDesignData['@RoomDesignId']:
+                            roomName = ''.join(roomDesignData['@RoomName'])
+                        if roomDesignId == roomDesignData['@UpgradeFromRoomDesignId']:
+                            upgradeRoomDesignId = roomDesignData['@RoomDesignId']
+                            upgradeRoomName = ''.join(roomDesignData['@RoomName'])
+                            cost = roomDesignData['@PriceString'].split(":")
+                            url = "https://api.pixelstarships.com/RoomService/CollectAllResources?itemType=None&collectDate={}&accessToken={}".format( "{0:%Y-%m-%dT%H:%M:%S}".format(DotNet.validDateTime()), self.accessToken,)
+                            r = self.request(url, "POST")
+                            d = xmltodict.parse(r.content, xml_attribs=True)
+                            try:
+                                self.credits = d["RoomService"]["CollectResources"]["User"]["@Credits"]
+                            except:
+                                pass
+                            self.rssCollectedTimestamp = time.time()
+                            self.mineralTotal = d['RoomService']['CollectResources']['Items']['Item'][0]['@Quantity']
+                            self.gasTotal = d['RoomService']['CollectResources']['Items']['Item'][1]['@Quantity']
+                            if (cost[0] == "mineral") and (int(cost[1]) > int(self.mineralTotal)):
+                                continue
 
+                            if (cost[0] == "gas") and (int(cost[1]) > int(self.mineralTotal)):
+                                continue
 
-                    for roomData in rooms['RoomService']['ListRoomDesigns']['RoomDesigns']['RoomDesign']:
-                        if roomDesignId == roomData['@RoomDesignId']:
-                            roomName = ''.join(roomData['@RoomName'])
-                            for roomData in rooms['RoomService']['ListRoomDesigns']['RoomDesigns']['RoomDesign']:
-                                if upgradeRoomDesignId == roomData['@RoomDesignId']:
-                                   upgradeRoomName = ''.join(roomData['@RoomName'])
-
-                            if roomName and upgradeRoomName and (roomStatus != "Upgrading"):
-                                print(f"Attempting to upgrade {roomName} to {upgradeRoomName}.")
+                            if roomName and upgradeRoomName and (roomStatus != "Upgrading") and upgradeRoomDesignId != '0':
+                                print(f"Upgrade {roomName} to {upgradeRoomName}.")
+                                url = f"https://api.pixelstarships.com/RoomService/UpgradeRoom2?roomId={roomId}&upgradeRoomDesignId={upgradeRoomDesignId}&accessToken={self.accessToken}"
+                                time.sleep(random.uniform(5.0, 10.0))
+                                self.request(url, "POST")
                                 roomName = ""
                                 upgradeRoomName = ""
+                                # Debugging Code Block
+                                #count = 0
+                                #for checkRoomData in shipData["ShipService"]["GetShipByUserId"]["Ship"]["Rooms"]["Room"]:
+                                #    if count == 2:
+                                #        raise SystemExit("Debugging")
+
+                                #    if checkRoomData["@RoomId"] == roomId:
+                                #        for checkRoomDesignData in roomDesigns['RoomService']['ListRoomDesigns']['RoomDesigns']['RoomDesign']:
+                                #            if roomDesignId == checkRoomDesignData["@RoomDesignId"]:
+                                #                print(f"{checkRoomDesignData=}")
+                                #                count += 1
+                                #        for checkRoomDesignData in roomDesigns['RoomService']['ListRoomDesigns']['RoomDesigns']['RoomDesign']:
+                                #            if upgradeRoomDesignId == checkRoomDesignData["@RoomDesignId"]:
+                                #                pprint(f"{checkRoomDesignData=}")
+                                #                count += 1
             return True
 
 
