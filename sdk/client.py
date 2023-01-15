@@ -639,10 +639,12 @@ class Client(object):
             if d:
                 print("Restocking ammo, androids, crafts, modules, and charges.")
                 self.clientDateTime = "{0:%Y-%m-%dT%H:%M:%S}".format(DotNet.validDateTime())
-                url = f"http://api.pixelstarships.com/RoomService/RebuildAmmo2?ammoCategory=None&clientDateTime={self.clientDateTime}&checksum={self.checksum}&accessToken={self.accessToken}"
-                r = self.request(url, "POST")
-                d = xmltodict.parse(r.content, xml_attribs=True)
-                return d
+                ammoCategories=["Ammo", "Android", "Craft", "Module", "Charge"]
+                for ammoCategory in ammoCategories:
+                    url = f"http://api.pixelstarships.com/RoomService/RebuildAmmo2?ammoCategory={ammoCategory}&clientDateTime={self.clientDateTime}&checksum={self.checksum}&accessToken={self.accessToken}"
+                    r = self.request(url, "POST")
+                    d = xmltodict.parse(r.content, xml_attribs=True)
+                    return d
         return False
 
     def heartbeat(self):
