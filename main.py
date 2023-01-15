@@ -157,6 +157,7 @@ def main():
             time.sleep(random.uniform(5.0, 10.0))
 
             if client.freeStarbuxToday >= 10:
+                client.listAllCharactersOfUser()
                 client.rebuildAmmo()
                 client.upgradeResearchorRoom()
                 time.sleep(random.uniform(0.1, 1.0))
