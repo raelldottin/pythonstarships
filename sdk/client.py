@@ -560,7 +560,6 @@ class Client(object):
                                 self.credits = d["RoomService"]["CollectResources"]["User"]["@Credits"]
                             except:
                                 pass
-                            self.rssCollectedTimestamp = time.time()
                             self.mineralTotal = d['RoomService']['CollectResources']['Items']['Item'][0]['@Quantity']
                             self.gasTotal = d['RoomService']['CollectResources']['Items']['Item'][1]['@Quantity']
                             if (cost[0] == "mineral") and (int(cost[1]) > int(self.mineralTotal)):
@@ -576,21 +575,6 @@ class Client(object):
                                 self.request(url, "POST")
                                 roomName = ""
                                 upgradeRoomName = ""
-                                # Debugging Code Block
-                                #count = 0
-                                #for checkRoomData in shipData["ShipService"]["GetShipByUserId"]["Ship"]["Rooms"]["Room"]:
-                                #    if count == 2:
-                                #        raise SystemExit("Debugging")
-
-                                #    if checkRoomData["@RoomId"] == roomId:
-                                #        for checkRoomDesignData in roomDesigns['RoomService']['ListRoomDesigns']['RoomDesigns']['RoomDesign']:
-                                #            if roomDesignId == checkRoomDesignData["@RoomDesignId"]:
-                                #                print(f"{checkRoomDesignData=}")
-                                #                count += 1
-                                #        for checkRoomDesignData in roomDesigns['RoomService']['ListRoomDesigns']['RoomDesigns']['RoomDesign']:
-                                #            if upgradeRoomDesignId == checkRoomDesignData["@RoomDesignId"]:
-                                #                pprint(f"{checkRoomDesignData=}")
-                                #                count += 1
             return True
 
     def getLatestVersion(self):
