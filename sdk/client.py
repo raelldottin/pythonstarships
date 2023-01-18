@@ -565,17 +565,30 @@ class Client(object):
                             if (cost[0] == "mineral") and (int(cost[1]) > int(self.mineralTotal)):
                                 continue
 
-                            if (cost[0] == "gas") and (int(cost[1]) > int(self.mineralTotal)):
+                            if (cost[0] == "gas") and (int(cost[1]) > int(self.gasTotal)):
                                 continue
 
                             if roomName and upgradeRoomName and (roomStatus != "Upgrading") and upgradeRoomDesignId != '0':
-                                print(f"Upgrade {roomName} to {upgradeRoomName}.")
+                                print(f"Upgradng {roomName} to {upgradeRoomName}.")
                                 url = f"https://api.pixelstarships.com/RoomService/UpgradeRoom2?roomId={roomId}&upgradeRoomDesignId={upgradeRoomDesignId}&accessToken={self.accessToken}"
                                 time.sleep(random.uniform(5.0, 10.0))
                                 self.request(url, "POST")
                                 roomName = ""
                                 upgradeRoomName = ""
             return True
+
+    def listUpgradingRooms(self):
+        if self.user.isAuthorized:
+            shipData = self.getShipByUserId()
+            roomDesigns = self.listRoomDesigns()
+            if shipData and roomDesigns:
+                for room in shipData["ShipService"]["GetShipByUserId"]["Ship"]["Rooms"]["Room"]:
+                    if room["@RoomStatus"] == "Upgrading":
+                        for roomDesignData in roomDesigns['RoomService']['ListRoomDesigns']['RoomDesigns']['RoomDesign']:
+                            if room["@RoomDesignId"] == roomDesignData['@RoomDesignId']:
+                                print(f"{''.join(roomDesignData['@RoomName'])} is currently being upgraded.")
+            return True
+        return False
 
     def getLatestVersion(self):
         if self.user.isAuthorized:
