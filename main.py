@@ -199,6 +199,7 @@ def main():
                     f"A total of {client.freeStarbuxToday} free starbux was collected today."
                 )
                 print(f"You have a total of {client.credits} starbux.")
+                client.listUpgradingRooms()
                 break
     if (
         type(args.email) == list
