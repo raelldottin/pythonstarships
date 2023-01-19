@@ -1,4 +1,5 @@
 # {{ repository.name }} {{ current.version }}
+[![GitHub Metrics Updates](https://github.com/{{ repository.name }}/actions/workflows/daily-run.yml/badge.svg)](https://github.com/{{ repository.name }}/actions/workflows/dail-run.yml)
 
 Automate trivial tasks in Pixel Starships Mobile Starategy Sci-Fi MMORPG
 
@@ -27,7 +28,4 @@ It also stores a token to relogin without credentials.
 
 It seems that battle is simulated server-side so we have to simulate it client-side, and I don't have enough time to make it. Maybe later.
 But you could join first battle and leave. Server would insta-simulate data as soon as you reconnect.
-
 ---
-![Profile views](https://visitor-badge.glitch.me/badge?page_id=raelldottin)
-[![GitHub Metrics Updates](https://github.com/{{ repository.name }}/actions/workflows/daily-run.yml/badge.svg)](https://github.com/{{ repository.name }}/actions/workflows/dail-run.yml)
