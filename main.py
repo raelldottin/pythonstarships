@@ -161,9 +161,9 @@ def main():
                 time.sleep(random.uniform(5.0, 10.0))
                 client.rebuildAmmo()
                 time.sleep(random.uniform(5.0, 10.0))
-                client.upgradeResearchorRoom()
-                time.sleep(random.uniform(5.0, 10.0))
                 client.rushResearchOrConstruction()
+                time.sleep(random.uniform(5.0, 10.0))
+                client.upgradeResearchorRoom()
                 time.sleep(random.uniform(5.0, 10.0))
                 if client.collectDailyReward():
                     print("You've collected the daily reward from the dropship.")
